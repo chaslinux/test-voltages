@@ -1,7 +1,6 @@
 #!/bin/bash
 # test-voltages.sh
 # Multi-battery runtime monitor with HH:MM format
-# Works on systems with one or more batteries
 
 # Find all batteries
 BATTERIES=$(upower -e | grep -i "battery")
@@ -46,12 +45,8 @@ for BAT in $BATTERIES; do
         RATE_FMT=$(printf "%.2f" "$RATE")
     fi
 
-    # Format total energy/rate safely
-if [[ -z "$TOTAL_ENERGY" ]]; then TOTAL_ENERGY_FMT="0"; else TOTAL_ENERGY_FMT=$(printf "%.2f" "$TOTAL_ENERGY"); fi
-if [[ -z "$TOTAL_RATE" ]]; then TOTAL_RATE_FMT="0"; else TOTAL_RATE_FMT=$(printf "%.2f" "$TOTAL_RATE"); fi
-
-printf "\nTotal: Energy=%sWh, Rate=%sW, Combined Runtime=%s\n" "$TOTAL_ENERGY_FMT" "$TOTAL_RATE_FMT" "$TOTAL_RUNTIME"
-
+    printf "- %s: State=%s, Energy=%sWh, Rate=%sW, Runtime=%s\n" "$NAME" "$STATE" "$ENERGY_FMT" "$RATE_FMT" "$RUNTIME"
+done  # <- close the for loop
 
 # Calculate total runtime
 if (( $(echo "$TOTAL_RATE == 0" | bc -l) )); then
@@ -64,5 +59,9 @@ else
     TOTAL_RUNTIME="${TOTAL_HH}:${TOTAL_MM}"
 fi
 
-printf "\nTotal: Energy=%.2fWh, Rate=%.2fW, Combined Runtime=%s\n" "$TOTAL_ENERGY" "$TOTAL_RATE" "$TOTAL_RUNTIME"
+# Format total energy/rate safely
+TOTAL_ENERGY_FMT=$(printf "%.2f" "$TOTAL_ENERGY")
+TOTAL_RATE_FMT=$(printf "%.2f" "$TOTAL_RATE")
+
+printf "\nTotal: Energy=%sWh, Rate=%sW, Combined Runtime=%s\n" "$TOTAL_ENERGY_FMT" "$TOTAL_RATE_FMT" "$TOTAL_RUNTIME"
 
