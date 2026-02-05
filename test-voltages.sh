@@ -45,8 +45,9 @@ for BAT in $BATTERIES; do
         RATE_FMT=$(printf "%.2f" "$RATE")
     fi
 
-    printf "- %s: State=%s, Energy=%sWh, Rate=%sW, Runtime=%s\n" "$NAME" "$STATE" "$ENERGY_FMT" "$RATE_FMT" "$RUNTIME"
-done  # <- close the for loop
+    # Safe printf: add space before dash to avoid leading '-' errors
+    printf "  - %s: State=%s, Energy=%sWh, Rate=%sW, Runtime=%s\n" "$NAME" "$STATE" "$ENERGY_FMT" "$RATE_FMT" "$RUNTIME"
+done
 
 # Calculate total runtime
 if (( $(echo "$TOTAL_RATE == 0" | bc -l) )); then
