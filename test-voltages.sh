@@ -46,8 +46,12 @@ for BAT in $BATTERIES; do
         RATE_FMT=$(printf "%.2f" "$RATE")
     fi
 
-    printf "- %s: State=%s, Energy=%sWh, Rate=%sW, Runtime=%s\n" "$NAME" "$STATE" "$ENERGY_FMT" "$RATE_FMT" "$RUNTIME"
-done
+    # Format total energy/rate safely
+if [[ -z "$TOTAL_ENERGY" ]]; then TOTAL_ENERGY_FMT="0"; else TOTAL_ENERGY_FMT=$(printf "%.2f" "$TOTAL_ENERGY"); fi
+if [[ -z "$TOTAL_RATE" ]]; then TOTAL_RATE_FMT="0"; else TOTAL_RATE_FMT=$(printf "%.2f" "$TOTAL_RATE"); fi
+
+printf "\nTotal: Energy=%sWh, Rate=%sW, Combined Runtime=%s\n" "$TOTAL_ENERGY_FMT" "$TOTAL_RATE_FMT" "$TOTAL_RUNTIME"
+
 
 # Calculate total runtime
 if (( $(echo "$TOTAL_RATE == 0" | bc -l) )); then
